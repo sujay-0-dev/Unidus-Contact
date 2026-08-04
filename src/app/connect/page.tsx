@@ -37,7 +37,7 @@ export async function generateMetadata(): Promise<Metadata> {
       siteName: companyName,
       images: [
         {
-          url: '/connect/opengraph-image', // Served dynamically by opengraph-image.tsx
+          url: '/poster.jpg', // Replace with the actual image file
           width: 1200,
           height: 630,
           alt: `${companyName} - Integrated Solutions & Services`,
@@ -50,7 +50,7 @@ export async function generateMetadata(): Promise<Metadata> {
       card: 'summary_large_image',
       title,
       description,
-      images: ['/connect/opengraph-image'],
+      images: ['/poster.jpg'],
     },
     robots: {
       index: true,
