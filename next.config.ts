@@ -5,12 +5,12 @@ const nextConfig: NextConfig = {
     return [
       {
         source: '/go/whatsapp',
-        destination: 'https://wa.me/910000000000', // Replace with actual number
+        destination: 'https://wa.me/917003696960',
         permanent: false,
       },
       {
         source: '/go/form',
-        destination: 'https://forms.gle/your-form-id', // Replace with actual form URL
+        destination: 'https://forms.gle/E7VSCKerkjuSVaq7A',
         permanent: false,
       },
       {
