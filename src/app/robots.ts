@@ -7,6 +7,6 @@ export default function robots(): MetadataRoute.Robots {
       allow: '/',
       disallow: ['/go/'], // Do not index redirect routes
     },
-    sitemap: 'https://unidus.in/sitemap.xml',
+    sitemap: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://unidus-contact.vercel.app'}/sitemap.xml`,
   };
 }

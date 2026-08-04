@@ -20,7 +20,7 @@ const nextConfig: NextConfig = {
       },
       {
         source: '/go/call',
-        destination: 'tel:+910000000000', // Replace with actual number
+        destination: 'tel:+917003696960',
         permanent: false,
       },
       {
