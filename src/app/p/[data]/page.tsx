@@ -7,8 +7,12 @@ type Props = {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   try {
-    // Decode the data
-    const decodedStr = Buffer.from(params.data, 'base64url').toString('utf-8');
+    // Decode the data safely without relying on Node's Buffer (safe for all Next.js runtimes)
+    const base64 = params.data.replace(/-/g, '+').replace(/_/g, '/');
+    const pad = base64.length % 4;
+    const padded = pad ? base64 + '='.repeat(4 - pad) : base64;
+    const decodedStr = atob(padded);
+    
     const data = JSON.parse(decodeURIComponent(decodedStr));
 
     const title = data.t || 'Check out this post!';
@@ -40,9 +44,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
         images: [imageUrl],
       },
     };
-  } catch (e) {
+  } catch (e: any) {
     return {
-      title: 'Invalid Link',
+      title: `Error: ${e.message}`,
       description: 'This link is invalid or corrupted.',
     };
   }
@@ -50,7 +54,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default function SharedPage({ params }: Props) {
   try {
-    const decodedStr = Buffer.from(params.data, 'base64url').toString('utf-8');
+    const base64 = params.data.replace(/-/g, '+').replace(/_/g, '/');
+    const pad = base64.length % 4;
+    const padded = pad ? base64 + '='.repeat(4 - pad) : base64;
+    const decodedStr = atob(padded);
+    
     const data = JSON.parse(decodeURIComponent(decodedStr));
 
     if (data.r) {
@@ -78,10 +86,13 @@ export default function SharedPage({ params }: Props) {
         </div>
       </div>
     );
-  } catch (e) {
+  } catch (e: any) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <h1 className="text-2xl text-red-600">Invalid Link</h1>
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold text-red-600 mb-2">Invalid Link</h1>
+          <p className="text-gray-600 font-mono text-sm">{e.message}</p>
+        </div>
       </div>
     );
   }
