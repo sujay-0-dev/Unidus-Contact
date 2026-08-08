@@ -9,7 +9,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   try {
     // Decode the data
     const decodedStr = Buffer.from(params.data, 'base64url').toString('utf-8');
-    const data = JSON.parse(decodedStr);
+    const data = JSON.parse(decodeURIComponent(decodedStr));
 
     const title = data.t || 'Check out this post!';
     const description = data.d || 'Shared via UNIDUS';
@@ -51,7 +51,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default function SharedPage({ params }: Props) {
   try {
     const decodedStr = Buffer.from(params.data, 'base64url').toString('utf-8');
-    const data = JSON.parse(decodedStr);
+    const data = JSON.parse(decodeURIComponent(decodedStr));
 
     if (data.r) {
       // If a redirect URL was provided, we can optionally redirect users who actually click the link
