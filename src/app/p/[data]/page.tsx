@@ -7,8 +7,9 @@ type Props = {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   try {
+    const resolvedParams = await params;
     // Decode the data safely without relying on Node's Buffer (safe for all Next.js runtimes)
-    const base64 = params.data.replace(/-/g, '+').replace(/_/g, '/');
+    const base64 = resolvedParams.data.replace(/-/g, '+').replace(/_/g, '/');
     const pad = base64.length % 4;
     const padded = pad ? base64 + '='.repeat(4 - pad) : base64;
     const decodedStr = atob(padded);
@@ -52,9 +53,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   }
 }
 
-export default function SharedPage({ params }: Props) {
+export default async function SharedPage({ params }: Props) {
   try {
-    const base64 = params.data.replace(/-/g, '+').replace(/_/g, '/');
+    const resolvedParams = await params;
+    const base64 = resolvedParams.data.replace(/-/g, '+').replace(/_/g, '/');
     const pad = base64.length % 4;
     const padded = pad ? base64 + '='.repeat(4 - pad) : base64;
     const decodedStr = atob(padded);
