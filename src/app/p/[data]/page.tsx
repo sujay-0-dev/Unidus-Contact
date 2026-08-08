@@ -75,15 +75,26 @@ export default async function SharedPage({ params }: Props) {
           <div className="p-8">
             <h1 className="text-3xl font-bold text-gray-900 mb-4">{data.t}</h1>
             <p className="text-gray-600 text-lg mb-8">{data.d}</p>
-            {data.r ? (
-              <a href={data.r} className="inline-block bg-blue-600 text-white font-bold py-3 px-8 rounded-full hover:bg-blue-700 transition-colors">
-                Learn More
+            
+            <div className="flex flex-col sm:flex-row gap-4 justify-start mt-6">
+              <a 
+                href={process.env.NEXT_PUBLIC_WHATSAPP_URL || "https://wa.me/917003696960"}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex-1 text-center bg-green-500 text-white font-bold py-4 px-6 rounded-xl hover:bg-green-600 transition-colors shadow-lg shadow-green-500/30 flex items-center justify-center gap-2"
+              >
+                WhatsApp Chat Us
               </a>
-            ) : (
-              <a href="/" className="inline-block bg-blue-600 text-white font-bold py-3 px-8 rounded-full hover:bg-blue-700 transition-colors">
-                Create Your Own
+              
+              <a 
+                href={process.env.NEXT_PUBLIC_GOOGLE_FORM || "https://forms.gle/E7VSCKerkjuSVaq7A"}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex-1 text-center bg-[#2dbfbb] text-white font-bold py-4 px-6 rounded-xl hover:bg-[#25a3a0] transition-colors shadow-lg shadow-[#2dbfbb]/30 flex items-center justify-center gap-2"
+              >
+                Are you interested? Enquiry Form
               </a>
-            )}
+            </div>
           </div>
         </div>
       </div>
