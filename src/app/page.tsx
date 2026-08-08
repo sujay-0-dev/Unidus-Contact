@@ -37,8 +37,8 @@ export default function Dashboard() {
       });
       const data = await res.json();
       if (data.url) {
-        // Construct full URL using window.location.origin
-        const fullUrl = `${window.location.origin}${data.url}`;
+        // Construct full URL if it's a relative path, otherwise use it directly
+        const fullUrl = data.url.startsWith('http') ? data.url : `${window.location.origin}${data.url}`;
         setImageUrl(fullUrl);
       } else {
         alert('Upload failed: ' + data.error);

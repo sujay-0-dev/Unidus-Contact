@@ -1,6 +1,4 @@
 import { NextResponse } from 'next/server';
-import { writeFile, mkdir } from 'fs/promises';
-import { join } from 'path';
 
 export async function POST(request: Request) {
   try {
@@ -11,28 +9,45 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'No file provided' }, { status: 400 });
     }
 
-    const bytes = await file.arrayBuffer();
-    const buffer = Buffer.from(bytes);
-
-    // Create a unique filename
-    const uniqueSuffix = `${Date.now()}-${Math.round(Math.random() * 1e9)}`;
-    const filename = `${uniqueSuffix}-${file.name.replace(/[^a-zA-Z0-9.-]/g, '_')}`;
+    const apiKey = process.env.IMGBB_API_KEY;
     
-    // Ensure the uploads directory exists
-    const uploadDir = join(process.cwd(), 'public', 'uploads');
-    try {
-      await mkdir(uploadDir, { recursive: true });
-    } catch (e) {
-      // Ignore if directory already exists
+    if (!apiKey) {
+      return NextResponse.json(
+        { error: 'Server configuration error: IMGBB_API_KEY is not set.' }, 
+        { status: 500 }
+      );
     }
 
-    const path = join(uploadDir, filename);
-    await writeFile(path, buffer);
+    // Convert file to base64 for ImgBB
+    const bytes = await file.arrayBuffer();
+    const buffer = Buffer.from(bytes);
+    const base64Image = buffer.toString('base64');
+
+    // Upload to ImgBB
+    const imgbbFormData = new URLSearchParams();
+    imgbbFormData.append('key', apiKey);
+    imgbbFormData.append('image', base64Image);
+    if (file.name) {
+      imgbbFormData.append('name', file.name.split('.')[0]); // Optional name
+    }
+
+    const response = await fetch('https://api.imgbb.com/1/upload', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: imgbbFormData.toString(),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok || !data.success) {
+      console.error('ImgBB Error:', data);
+      throw new Error(data.error?.message || 'Failed to upload to external service');
+    }
 
     // Return the URL path
-    const url = `/uploads/${filename}`;
-    
-    return NextResponse.json({ url, success: true });
+    return NextResponse.json({ url: data.data.url, success: true });
   } catch (error) {
     console.error('Upload error:', error);
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
